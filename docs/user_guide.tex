@@ -29,7 +29,7 @@
     keepspaces=true
 }
 
-\title{Polarizability Sweep Suite \\ User Guide}
+\title{espol-cuboids \\ Polarizability Sweep Suite --- User Guide}
 \author{}
 \date{\today}
 
@@ -69,7 +69,7 @@ implementation documents in this folder:
 \section{Project Structure}
 
 \begin{lstlisting}[language=,caption={Key files and directories}]
-oldx/
+espol-cuboids/
   run_mom3d_sweep.py         # 3D MoM sweep entry point
   run_mom2d_sweep.py         # 2D MoM sweep entry point
   run_dda_sweep.py           # DDA sweep entry point
@@ -98,7 +98,7 @@ oldx/
     test_mom2d.py            # 2D MoM mesh, solver, regression
     test_mom3d.py            # 3D MoM mesh, solver, ACA, convergence
 
-  csvfiles/                  # Output CSV files
+  data/csvdata/                  # Output CSV files
   data/_mom3d_cache/         # MoM 3D solve cache
   data/_dda_cache/           # DDA solve cache
 \end{lstlisting}
@@ -107,7 +107,7 @@ oldx/
 
 \begin{itemize}
     \item Python 3.10+ with NumPy, SciPy.
-    \item All scripts assume they are run from the \texttt{oldx/} directory.
+    \item All scripts assume they are run from the \texttt{espol-cuboids/} directory.
     \item The \texttt{tools/} folder is automatically added to the Python
           path by each entry script.
     \item Cached results are stored in \texttt{data/\_mom3d\_cache/} and
@@ -249,7 +249,7 @@ N_y = \frac{1}{P_{yy}/A}, \qquad
 N_{\Sigma} = N_x + N_y
 \]
 are printed to stdout.  Results are saved to
-\texttt{csvfiles/mom2d.csv}.
+\texttt{data/csvdata/mom2d.csv}.
 
 \section{Running the DDA Sweep}
 
@@ -285,14 +285,14 @@ used for all solves ($N \gtrsim 1000$).
 \begin{description}
     \item[\texttt{fixed}] Each shape is solved at a single lattice spacing
         $d = \min(l_y, l_z) / 10$.  Fast, suitable for quick surveys.
-        Output: \texttt{csvfiles/dda3d.csv}.
+        Output: \texttt{data/csvdata/dda3d.csv}.
 
     \item[\texttt{converge}] Each shape is solved at 4--5 values of $d$
         (chosen so that $N \le 20\,000$ dipoles per solve).  A power-law
         $P(d) = P_\infty + C\, d^\beta$ fit yields the continuum limit.
         Output:
-        \texttt{csvfiles/dda\_convergence\_raw.csv} (individual solves) and
-        \texttt{csvfiles/dda\_convergence\_cnv.csv} (extrapolated values).
+        \texttt{data/csvdata/dda\_convergence\_raw.csv} (individual solves) and
+        \texttt{data/csvdata/dda\_convergence\_cnv.csv} (extrapolated values).
 \end{description}
 
 \subsection{Examples}
@@ -315,7 +315,7 @@ python run_dda_sweep.py --mode converge --er 2,5,10
 
 Depolarization factors $N_x, N_y, N_z$ and their sum are printed per
 shape--$\varepsilon_r$--$d$ combination.  CSV files are written to the
-\texttt{csvfiles/} directory.
+\texttt{data/csvdata/} directory.
 
 \section{Interpreting Results}
 
@@ -371,7 +371,7 @@ recomputation, delete the relevant cache directory.
 
 \section{Running Tests}
 
-The test suite is run with pytest from the \texttt{oldx/} directory:
+The test suite is run with pytest from the \texttt{espol-cuboids/} directory:
 
 \begin{lstlisting}[language=bash]
 python -m pytest tests/ -q

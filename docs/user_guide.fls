@@ -1,6 +1,6 @@
-PWD /home/daniel/dev/pro/pol-cub/pol/oldx/docs
+PWD /home/daniel/dev/pro/pol-cub/espol-cuboids/docs
 INPUT /home/daniel/.miktex/texmfs/data/miktex/data/le/pdftex/pdflatex.fmt
-INPUT /home/daniel/dev/pro/pol-cub/pol/oldx/docs/user_guide.tex
+INPUT /home/daniel/dev/pro/pol-cub/espol-cuboids/docs/user_guide.tex
 OUTPUT user_guide.log
 INPUT /home/daniel/.miktex/texmfs/install/tex/latex/base/article.cls
 INPUT /home/daniel/.miktex/texmfs/install/tex/latex/base/article.cls

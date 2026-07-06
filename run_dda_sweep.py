@@ -2,8 +2,8 @@
 run_dda_sweep.py  ─  DDA shape-sweep for dielectric cuboids.
 
 Two modes:
-  --mode fixed      Single d = smin/10.        Output: csvfiles/dda3d.csv
-  --mode converge   Multiple d → d→0 fit.      Output: csvfiles/dda_convergence_{raw,cnv}.csv
+  --mode fixed      Single d = smin/10.        Output: data/csvdata/dda3d.csv
+  --mode converge   Multiple d → d→0 fit.      Output: data/csvdata/dda_convergence_{raw,cnv}.csv
 
 Usage:
     python run_dda_sweep.py --mode fixed
@@ -112,7 +112,7 @@ def run_fixed_d(er_values, dry_run=False):
                              Nx=1/Pxn,Ny=1/Pyn,Nz=1/Pzn,N_sum=1/Pxn+1/Pyn+1/Pzn))
             print(f"  {sx:.1f}x{sy:.2f}x{sz:.2f}  er={er:.1f}  Nx={1/Pxn:.4f} Ny={1/Pyn:.4f} Nz={1/Pzn:.4f}")
     if not dry_run and rows:
-        out = os.path.join(_HERE, 'csvfiles', 'dda3d.csv')
+        out = os.path.join(_HERE, 'data', 'csvdata', 'dda3d.csv')
         cols = ['er','sx','sy','sz','u (sy/sx)','v (sz/sx)','d','Pxx','Pyy','Pzz','Nx','Ny','Nz','N_sum']
         rows.sort(key=lambda r: (r['er'], r['sz'], r['sy']))
         with open(out, 'w', newline='') as f:
@@ -181,18 +181,18 @@ def run_converge(er_values, dry_run=False, verbose=True):
             r = cnv_rows[-1]
             print(f"  converged: Nx={r['Nx_inf']:.4f} Ny={r['Ny_inf']:.4f} Nz={r['Nz_inf']:.4f}  sum={r['N_sum_inf']:.4f}")
     if not dry_run:
-        out_dir = os.path.join(_HERE, 'csvfiles')
+        out_dir = os.path.join(_HERE, 'data', 'csvdata')
         os.makedirs(out_dir, exist_ok=True)
         rc = ['er','sx','sy','sz','smin','d_target','d_actual','N_dipoles','Pxx','Pyy','Pzz','Nx','Ny','Nz']
         raw_rows.sort(key=lambda r: (r['smin'],r['er'],r['d_target']))
         with open(os.path.join(out_dir,'dda_convergence_raw.csv'),'w',newline='') as f:
             w = csv.DictWriter(f, fieldnames=rc); w.writeheader(); w.writerows(raw_rows)
-        print(f"Saved {len(raw_rows)} rows -> csvfiles/dda_convergence_raw.csv")
+        print(f"Saved {len(raw_rows)} rows -> data/csvdata/dda_convergence_raw.csv")
         cc = ['er','sx','sy','sz','smin','Pxx_inf','Pyy_inf','Pzz_inf','Nx_inf','Ny_inf','Nz_inf','N_sum_inf']
         cnv_rows.sort(key=lambda r: (r['smin'],r['er']))
         with open(os.path.join(out_dir,'dda_convergence_cnv.csv'),'w',newline='') as f:
             w = csv.DictWriter(f, fieldnames=cc); w.writeheader(); w.writerows(cnv_rows)
-        print(f"Saved {len(cnv_rows)} rows -> csvfiles/dda_convergence_cnv.csv")
+        print(f"Saved {len(cnv_rows)} rows -> data/csvdata/dda_convergence_cnv.csv")
 
 
 def _parse_er():

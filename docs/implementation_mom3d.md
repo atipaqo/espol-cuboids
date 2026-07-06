@@ -1,5 +1,8 @@
 # Implementation: Method of Moments (MoM) — 3D Electrostatics
 
+> Part of the **espol-cuboids** project — electrostatic polarizability of cuboids
+> and rectangular cylinders.
+
 ## Overview
 
 We compute the full \(3 \times 3\) polarizability tensor of a dielectric cuboid

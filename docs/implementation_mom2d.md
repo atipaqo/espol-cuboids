@@ -1,5 +1,8 @@
 # Implementation: Method of Moments (MoM) — 2D Electrostatics
 
+> Part of the **espol-cuboids** project — electrostatic polarizability of cuboids
+> and rectangular cylinders.
+
 ## Overview
 
 We compute the polarizability tensor of an infinitely long dielectric prism

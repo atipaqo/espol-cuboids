@@ -18,5 +18,5 @@ Results are very informative:
 4. For cubes and moderate aspect ratios, **both methods are equally reliable** — pick either.
 
 Raw data saved to:
-- `csvfiles/dda_convergence_raw.csv` — all raw DDA solves at each d-level
-- `csvfiles/dda_convergence_cnv.csv` — converged DDA vs MoM vs fixed-d comparison
+- `data/csvdata/dda_convergence_raw.csv` — all raw DDA solves at each d-level
+- `data/csvdata/dda_convergence_cnv.csv` — converged DDA vs MoM vs fixed-d comparison

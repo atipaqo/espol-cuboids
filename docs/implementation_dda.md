@@ -1,5 +1,8 @@
 # Implementation: Discrete Dipole Approximation (DDA) — 3D Electrostatics
 
+> Part of the **espol-cuboids** project — electrostatic polarizability of cuboids
+> and rectangular cylinders.
+
 ## Overview
 
 The Discrete Dipole Approximation (DDA) computes the polarizability of a
