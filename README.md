@@ -55,9 +55,9 @@ relative permittivities (e.g., `--er 2,5,10`).
 ## Installation
 
 ```bash
-git clone https://github.com/username/polarizability-sweep.git
-cd polarizability-sweep
-pip install -r requirements.txt   # numpy, scipy
+git clone https://github.com/atipaqo/espol-cuboids.git
+cd espol-cuboids
+pip install numpy scipy
 ```
 
 ## Project Structure
@@ -89,9 +89,7 @@ pip install -r requirements.txt   # numpy, scipy
 │   ├── implementation_mom3d.md
 │   ├── implementation_mom2d.md
 │   └── implementation_dda.md
-├── data/                     # Solver caches (auto-created)
-├── csvfiles/                 # CSV output (auto-created)
-└── legacy/                   # Archived/obsolete scripts
+├── data/                     # Solver caches & CSV output (auto-created)
 ```
 
 ## Running Tests
