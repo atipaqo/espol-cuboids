@@ -1,0 +1,27 @@
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
+\contentsline {section}{\numberline {2}Project Structure}{2}{section.2}%
+\contentsline {section}{\numberline {3}Prerequisites}{3}{section.3}%
+\contentsline {section}{\numberline {4}Running the MoM 3D Sweep}{3}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Command-Line Options}{3}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Shape Grid}{3}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Convergence}{3}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Examples}{4}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Output}{4}{subsection.4.5}%
+\contentsline {section}{\numberline {5}Running the MoM 2D Sweep}{4}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Command-Line Options}{4}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Shape Grid}{4}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Convergence}{4}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Examples}{4}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Output}{5}{subsection.5.5}%
+\contentsline {section}{\numberline {6}Running the DDA Sweep}{5}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Command-Line Options}{5}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Modes}{5}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Examples}{5}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Output}{6}{subsection.6.4}%
+\contentsline {section}{\numberline {7}Interpreting Results}{6}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Depolarization Factors}{6}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Convergence Extrapolation}{6}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}PEC Limit}{6}{subsection.7.3}%
+\contentsline {section}{\numberline {8}Caching}{6}{section.8}%
+\contentsline {section}{\numberline {9}Running Tests}{7}{section.9}%
+\contentsline {section}{\numberline {10}Further Reading}{7}{section.10}%

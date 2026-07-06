@@ -1,0 +1,22 @@
+Results are very informative:
+
+| Shape | DDA fixed-d | DDA converged | MoM | fxd→cnv | DDA vs MoM |
+|-------|-----------|-------------|-----|---------|------------|
+| 1.0×1.0×1.0 | 0.3976 | 0.3962 | 0.4013 | −0.4% | 1.3% |
+| 1.0×1.0×0.5 | 0.3214 | 0.3217 | 0.3268 | +0.1% | 1.6% |
+| 1.0×0.5×0.5 | 0.2693 | 0.2730 | 0.2758 | +1.4% | 1.0% |
+| 1.0×0.3×0.3 | 0.2144 | 0.2084 | 0.2029 | −2.8% | 2.6% |
+
+**Key findings:**
+
+1. **DDA fixed-d is already near-converged** — the d→0 shift is only 0.1–3%, meaning the fixed-d DDA data is quite reliable for moderate aspect ratios.
+
+2. **DDA and MoM agree to 1–3%** across all four shapes — excellent cross-validation between two completely different methods.
+
+3. **For the thin shape (1.0×0.3×0.3), DDA convergence is noisy** — Nx oscillates (0.182→0.217→0.204→0.195→0.213) because only 5–13 dipoles span the 0.3 dimension. MoM is better resolved there with 7–10 surface elements. **MoM is more trustworthy for thin shapes.**
+
+4. For cubes and moderate aspect ratios, **both methods are equally reliable** — pick either.
+
+Raw data saved to:
+- `csvfiles/dda_convergence_raw.csv` — all raw DDA solves at each d-level
+- `csvfiles/dda_convergence_cnv.csv` — converged DDA vs MoM vs fixed-d comparison

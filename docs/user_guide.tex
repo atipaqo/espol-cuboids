@@ -1,0 +1,401 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{amsmath}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+
+\lstset{
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{gray},
+    xleftmargin=1em,
+    xrightmargin=1em,
+    showstringspaces=false,
+    columns=flexible,
+    keepspaces=true
+}
+
+\title{Polarizability Sweep Suite \\ User Guide}
+\author{}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+This suite computes the electrostatic polarizability tensor of dielectric
+cuboids using three independent numerical methods:
+%
+\begin{itemize}
+    \item \textbf{MoM 3D} — 3D surface integral equation (Method of Moments)
+          for rectangular cuboids of arbitrary aspect ratio.
+    \item \textbf{MoM 2D} — 2D boundary integral equation for infinitely long
+          prisms with rectangular cross-section.
+    \item \textbf{DDA} — Discrete Dipole Approximation (volume integral
+          equation) on a cubic lattice inside the cuboid.
+\end{itemize}
+%
+All three methods output the normalised depolarization factors
+\(N_x, N_y, N_z\) for each shape and permittivity.  The MoM and DDA solvers
+also perform convergence extrapolation to the continuum limit.
+
+For mathematical details of each method, refer to the accompanying
+implementation documents in this folder:
+%
+\begin{itemize}
+    \item \texttt{implementation\_mom3d.md}
+    \item \texttt{implementation\_mom2d.md}
+    \item \texttt{implementation\_dda.md}
+\end{itemize}
+
+\section{Project Structure}
+
+\begin{lstlisting}[language=,caption={Key files and directories}]
+oldx/
+  run_mom3d_sweep.py         # 3D MoM sweep entry point
+  run_mom2d_sweep.py         # 2D MoM sweep entry point
+  run_dda_sweep.py           # DDA sweep entry point
+
+  tools/
+    gen_mom_3d.py            # 3D MoM: convergence, caching, power-law fit
+    gen_mesh_3d_rect.py      # 3D surface mesh generator
+    sm_comp_polarizability_3d.py  # 3D MoM core solver
+    mom3d_kernel.py          # Matrix-free GMRES operator
+    mom3d_aca.py             # ACA-compressed H-matrix solver
+    gen_mesh_2d_rect.py      # 2D perimeter mesh generator
+    sm_comp_polarizability_2d.py  # 2D MoM core solver
+    vector_analysis.py       # V3, D3, Mesh data structures
+    dda_core.py              # DDA: lattice, FFT-GMRES, convergence
+    _path_setup.py           # Python path bootstrap
+
+  docs/
+    user_guide.tex           # This document
+    implementation_mom3d.md
+    implementation_mom2d.md
+    implementation_dda.md
+
+  tests/
+    test_vector.py           # V3, D3, Mesh unit tests
+    test_dda_core.py         # DDA correctness & regression
+    test_mom2d.py            # 2D MoM mesh, solver, regression
+    test_mom3d.py            # 3D MoM mesh, solver, ACA, convergence
+
+  csvfiles/                  # Output CSV files
+  data/_mom3d_cache/         # MoM 3D solve cache
+  data/_dda_cache/           # DDA solve cache
+\end{lstlisting}
+
+\section{Prerequisites}
+
+\begin{itemize}
+    \item Python 3.10+ with NumPy, SciPy.
+    \item All scripts assume they are run from the \texttt{oldx/} directory.
+    \item The \texttt{tools/} folder is automatically added to the Python
+          path by each entry script.
+    \item Cached results are stored in \texttt{data/\_mom3d\_cache/} and
+          \texttt{data/\_dda\_cache/}.  Delete these directories to force
+          recomputation.
+\end{itemize}
+
+\section{Running the MoM 3D Sweep}
+
+\subsection{Command-Line Options}
+
+\begin{lstlisting}[language=bash]
+python run_mom3d_sweep.py [--er ER_LIST] [--solver direct|aca] [--dry-run]
+\end{lstlisting}
+
+\begin{center}
+\begin{tabular}{@{}llp{6cm}@{}}
+\toprule
+Flag & Values & Description \\
+\midrule
+\texttt{--er} & Comma-separated floats
+    & Relative permittivities to sweep.
+      Default: \texttt{10,20,100,1e10} (where \texttt{1e10} $\approx$ PEC). \\
+\texttt{--solver} & \texttt{direct} (default), \texttt{aca}
+    & Solver backend.  \texttt{direct} uses LU factorization;
+      \texttt{aca} uses ACA-compressed H-matrix + GMRES (recommended for
+      large meshes, $N > 2000$). \\
+\texttt{--dry-run} & (no value)
+    & Print the shapes, $\varepsilon_r$ values, and $n_d$ sequences
+      that would be computed, then exit. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Shape Grid}
+\label{sec:mom3d_shapegrid}
+
+The sweep covers 15 aspect ratios $(u,v) = (l_y/l_x,\; l_z/l_x)$:
+%
+\begin{quote}
+\ttfamily
+(1.0, 1.0), (1.0, 0.7), (1.0, 0.5), (1.0, 0.3), (1.0, 0.2),
+(0.7, 0.7), (0.7, 0.5), (0.7, 0.3), (0.7, 0.2),
+(0.5, 0.5), (0.5, 0.3), (0.5, 0.2),
+(0.3, 0.3), (0.3, 0.2), (0.2, 0.2)
+\end{quote}
+%
+with $l_x = 1$ fixed.
+
+\subsection{Convergence}
+
+For each shape, the solver runs 4--6 mesh resolutions $(n_d)$ chosen
+adaptively by \texttt{adaptive\_nd()}.  A power-law fit
+$P(n_d) = P_\infty + C\, n_d^{-\beta}$ extrapolates to the continuum
+limit.  Individual solves and converged fits are cached on disk.
+
+\subsection{Examples}
+
+\begin{lstlisting}[language=bash]
+# Preview what will be computed
+python run_mom3d_sweep.py --dry-run
+
+# Sweep with default permittivities (direct LU)
+python run_mom3d_sweep.py
+
+# Single permittivity with ACA solver
+python run_mom3d_sweep.py --er 10 --solver aca
+
+# Custom permittivity range
+python run_mom3d_sweep.py --er 1.5,3,6,12,100
+\end{lstlisting}
+
+\subsection{Output}
+
+Results are printed to stdout as the sweep progresses.  The depolarization
+factors $N_x, N_y, N_z$ and their sum $N_{\Sigma} = N_x + N_y + N_z$ are
+shown for each shape--$\varepsilon_r$ pair.
+
+For bulk data export, use the standalone \texttt{gen\_mom\_3d.main()}
+function (run \texttt{python tools/gen\_mom\_3d.py --dry-run}).
+
+\section{Running the MoM 2D Sweep}
+
+\subsection{Command-Line Options}
+
+\begin{lstlisting}[language=bash]
+python run_mom2d_sweep.py [--er ER_LIST] [--dry-run]
+\end{lstlisting}
+
+\begin{center}
+\begin{tabular}{@{}llp{6cm}@{}}
+\toprule
+Flag & Values & Description \\
+\midrule
+\texttt{--er} & Comma-separated floats
+    & Relative permittivities.  Default: \texttt{10,20,100,1e10}. \\
+\texttt{--dry-run} & (no value)
+    & Print the shapes and $n_d$ sequences that would be computed, then exit. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The 2D solver uses only the direct LU backend (no ACA/GMRES option), as
+problem sizes remain small ($n \lesssim 500$).
+
+\subsection{Shape Grid}
+
+11 aspect ratios $r = l_y / l_x$ with $l_x = 1$:
+%
+\begin{quote}
+\ttfamily 1.0, 0.7, 0.5, 0.3, 0.2, 0.15, 0.1, 0.07, 0.05, 0.03, 0.02
+\end{quote}
+
+\subsection{Convergence}
+
+$n_d$ sequences are chosen adaptively.  A power-law fit extrapolates to
+$n_d \to \infty$.  Individual solves and fits are cached in
+\texttt{data/\_mom2d\_cache/}.
+
+\subsection{Examples}
+
+\begin{lstlisting}[language=bash]
+# Preview
+python run_mom2d_sweep.py --dry-run
+
+# Full sweep
+python run_mom2d_sweep.py
+
+# Custom permittivities
+python run_mom2d_sweep.py --er 2,5,10
+\end{lstlisting}
+
+\subsection{Output}
+
+For each shape--$\varepsilon_r$ pair, the normalized depolarization factors
+\[
+N_x = \frac{1}{P_{xx}/A}, \qquad
+N_y = \frac{1}{P_{yy}/A}, \qquad
+N_{\Sigma} = N_x + N_y
+\]
+are printed to stdout.  Results are saved to
+\texttt{csvfiles/mom2d.csv}.
+
+\section{Running the DDA Sweep}
+
+\subsection{Command-Line Options}
+
+\begin{lstlisting}[language=bash]
+python run_dda_sweep.py --mode fixed|converge [--er ER_LIST] [--dry-run]
+\end{lstlisting}
+
+\begin{center}
+\begin{tabular}{@{}llp{5.5cm}@{}}
+\toprule
+Flag & Values & Description \\
+\midrule
+\texttt{--mode} & \texttt{fixed}, \texttt{converge}
+    & \texttt{fixed}: single lattice spacing $d = s_{\min}/10$.
+      \texttt{converge}: multiple $d$ levels with $d \to 0$ fit. \\
+\texttt{--er} & Comma-separated floats
+    & Relative permittivities.
+      Default: \texttt{0.5,1.25,1.5,1.75,2,3,5,8,10,12.5}. \\
+\texttt{--dry-run} & (no value)
+    & Print the shapes and lattice parameters, then exit. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The DDA sweep shares the same 15-shape grid as the MoM 3D sweep
+(Section~\ref{sec:mom3d_shapegrid}).  The FFT-accelerated GMRES backend is
+used for all solves ($N \gtrsim 1000$).
+
+\subsection{Modes}
+
+\begin{description}
+    \item[\texttt{fixed}] Each shape is solved at a single lattice spacing
+        $d = \min(l_y, l_z) / 10$.  Fast, suitable for quick surveys.
+        Output: \texttt{csvfiles/dda3d.csv}.
+
+    \item[\texttt{converge}] Each shape is solved at 4--5 values of $d$
+        (chosen so that $N \le 20\,000$ dipoles per solve).  A power-law
+        $P(d) = P_\infty + C\, d^\beta$ fit yields the continuum limit.
+        Output:
+        \texttt{csvfiles/dda\_convergence\_raw.csv} (individual solves) and
+        \texttt{csvfiles/dda\_convergence\_cnv.csv} (extrapolated values).
+\end{description}
+
+\subsection{Examples}
+
+\begin{lstlisting}[language=bash]
+# Preview fixed mode
+python run_dda_sweep.py --mode fixed --dry-run
+
+# Quick fixed-d sweep (all er, all shapes)
+python run_dda_sweep.py --mode fixed
+
+# Converge mode for er=10 only
+python run_dda_sweep.py --mode converge --er 10
+
+# Converge mode with multiple er values
+python run_dda_sweep.py --mode converge --er 2,5,10
+\end{lstlisting}
+
+\subsection{Output}
+
+Depolarization factors $N_x, N_y, N_z$ and their sum are printed per
+shape--$\varepsilon_r$--$d$ combination.  CSV files are written to the
+\texttt{csvfiles/} directory.
+
+\section{Interpreting Results}
+
+\subsection{Depolarization Factors}
+
+The depolarization factor $N_i$ (for axis $i$) relates the internal field to
+the applied field in an ellipsoid:
+\[
+E_i^{\rm int} = E_i^{\rm app} - \frac{N_i}{\varepsilon_0} P_i
+\]
+For cuboids, $N_i$ is shape- and permittivity-dependent (unlike ellipsoids,
+where it depends only on shape).  The sum rule
+\[
+N_x + N_y + N_z = 1 \qquad \text{(3D)},\qquad
+N_x + N_y \approx 1 \qquad \text{(2D)}
+\]
+holds exactly for ellipsoids and approximately for cuboids at moderate
+$\varepsilon_r$.
+
+\subsection{Convergence Extrapolation}
+
+The power-law fit $P(d) = P_\infty + C\,d^\beta$ is justified by the leading
+discretization-error term for smooth geometries.  The exponent $\beta$ is
+typically 1--2 for the MoM and 1--3 for the DDA.  Fits are monitored;
+if the residual is large or $\beta$ falls outside expected bounds,
+the finest-resolution value is used as a fallback.
+
+\subsection{PEC Limit}
+
+For the DDA, the PEC limit is obtained by fitting
+$\alpha(\varepsilon_r) = \alpha_{\rm PEC} + A/\varepsilon_r$.
+For the MoM, $\varepsilon_r = 10^{10}$ is used as a proxy (the
+system matrix becomes nearly singular for true PEC, but
+$\varepsilon_r = 10^{10}$ gives the correct limit to $\sim$4 significant
+digits).
+
+\section{Caching}
+
+All three sweeps cache individual solves on disk:
+
+\begin{itemize}
+    \item \textbf{MoM 3D:} \texttt{data/\_mom3d\_cache/} — keyed by
+          $\varepsilon_r$, shape, $n_d$, $\beta$, and solver type (direct/ACA).
+    \item \textbf{MoM 2D:} \texttt{data/\_mom2d\_cache/} — keyed by
+          $\varepsilon_r$, shape, $n_d$, $\beta$.
+    \item \textbf{DDA:} \texttt{data/\_dda\_cache/} — keyed by
+          $\varepsilon_r$, shape, and lattice spacing $d$.
+\end{itemize}
+
+Cache keys include version tags; changing the implementation version
+automatically invalidates stale cache entries.  To force a full
+recomputation, delete the relevant cache directory.
+
+\section{Running Tests}
+
+The test suite is run with pytest from the \texttt{oldx/} directory:
+
+\begin{lstlisting}[language=bash]
+python -m pytest tests/ -q
+\end{lstlisting}
+
+This runs all 54 tests covering vector operations, mesh generation, MoM 2D/3D
+solvers, DDA solver, ACA solver, convergence extrapolation, and regression
+against known values.
+
+To skip slow tests (full MoM/DDA solves), use:
+\begin{lstlisting}[language=bash]
+python -m pytest tests/ -q -m "not slow"
+\end{lstlisting}
+
+\section{Further Reading}
+
+\begin{itemize}
+    \item \texttt{implementation\_mom3d.md} — Detailed description of the 3D
+          MoM formulation, octant symmetry, ACA compression, and power-law fit.
+    \item \texttt{implementation\_mom2d.md} — 2D PMCHW integral equation and
+          collocation discretization.
+    \item \texttt{implementation\_dda.md} — Clausius--Mossotti polarizability,
+          coupled-dipole equations, FFT-accelerated GMRES, and $d \to 0$ /
+          $\varepsilon_r \to \infty$ extrapolation.
+\end{itemize}
+
+\end{document}
