@@ -114,10 +114,11 @@ MIT
 
 If you use this code in academic work, the primary references are:
 
+- D. Gomez-Garcia, J. Li, and C. J. Leuschen, "espol-cuboids: Electrostatic
+  polarizability solvers for dielectric cuboids and rectangular cylinders,"
+  2026, online. Available: <https://github.com/atipaqo/espol-cuboids>.
 - R. F. Harrington, *Field Computation by Moment Methods*, Macmillan, 1968.
 - B. T. Draine and P. J. Flatau, "Discrete-dipole approximation for
   scattering calculations," *J. Opt. Soc. Am. A*, 11(4), 1491–1499, 1994.
-- M. Bebendorf, "Approximation of boundary element matrices,"
-  *Numer. Math.*, 86(4), 565–589, 2000.
 
 See the implementation documents in [`docs/`](docs/) for the full bibliography.
