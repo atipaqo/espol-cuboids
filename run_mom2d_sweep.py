@@ -64,11 +64,16 @@ def _fit_save(er, srx, sry, nd_levels, Pxx_inf, Pyy_inf, beta=1.0):
 # ── Power-law fit ──────────────────────────────────────────────────
 def _fit_powerlaw(P, nd):
     """Fit P(nd) = P_inf + C * nd^(-beta)."""
+    # Guard: if data is flat (already converged at all nd), skip fit
+    dP_range = np.max(np.abs(np.diff(P)))
+    if dP_range < 1e-12 * max(abs(P[-1]), 1e-15):
+        return P[-1], 0.0, 0.0
+
     from scipy.optimize import minimize
     nd2 = nd[1:]
     dnd = np.diff(nd)
     dP = np.diff(P) / dnd
-    x, y = np.log(nd2), np.log(np.abs(dP))
+    x, y = np.log(nd2), np.log(np.abs(dP) + 1e-300)
     slope, intercept = np.polyfit(x, y, 1)
     alpha = -slope
     D0 = np.exp(intercept)
@@ -87,6 +92,11 @@ def _fit_powerlaw(P, nd):
                    bounds=[(None, float(P[-1]) + abs(P[-1])*10), (None, None), (0.15, 5.0)],
                    method='L-BFGS-B', options={'maxiter': 200})
     P_inf, C, beta = res.x
+
+    # Fallback: if fit drifted far from finest-nd, use finest-nd directly
+    if abs(P_inf - P[-1]) > 0.5 * max(abs(P[-1]), 1e-15):
+        return P[-1], 0.0, 0.0
+
     return P_inf, C, beta
 
 
@@ -156,14 +166,18 @@ def converged_2d(er, srx, sry, nd=None, nd_edge_target=None, beta=1.0):
 
 
 # ── Grid ───────────────────────────────────────────────────────────
-SRY_LIST = [1.0, 0.7, 0.5, 0.3, 0.2, 0.1, 0.07, 0.05, 0.03, 0.02, 0.01]
+# 23 aspect ratios from data/csvdata/mom2d.csv
+# r = sry/srx,  with srx=1.0 → sry is the aspect ratio
+_R_LIST = [0.1, 0.15, 0.2, 0.3, 0.35, 0.4, 0.5, 0.6, 0.667, 0.8, 0.9,
+           1.0, 1.1, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 3.33, 5.0, 7.0, 10.0]
+SRY_LIST = _R_LIST  # srx=1.0, sry = aspect ratio
 
 
 def _parse_er():
     for i, arg in enumerate(sys.argv):
         if arg == '--er' and i+1 < len(sys.argv):
             return [float(x) for x in sys.argv[i+1].split(',')]
-    return [10, 20, 100, 1e10]
+    return [0.7, 1.5, 3.0, 6.0, 1e3, 1e5]
 
 
 # ── Main ───────────────────────────────────────────────────────────
@@ -189,7 +203,12 @@ def main():
             dt = time.time() - t1
             Nx = 1.0 / Pxx_inf if abs(Pxx_inf) > 1e-15 else np.inf
             Ny = 1.0 / Pyy_inf if abs(Pyy_inf) > 1e-15 else np.inf
-            er_s = 'PEC' if er > 1e9 else f'er={er:.0f}'
+            if er > 1e9:
+                er_s = 'PEC'
+            elif er >= 10:
+                er_s = f'er={er:.0f}'
+            else:
+                er_s = f'er={er:.1f}'
             print(f"  {er_s:>6s}  Nx={Nx:.6f} Ny={Ny:.6f}  "
                   f"sum={Nx+Ny:.6f}  [{dt:.1f}s]")
 
