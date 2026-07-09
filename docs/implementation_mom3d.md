@@ -43,13 +43,7 @@ The governing electrostatic SIE on the closed surface $S$ of a homogeneous
 dielectric is [1, 2]:
 
 $$
-\frac{\varepsilon_r + 1}{2} \sigma(\mathbf{r})
-+ \frac{\varepsilon_r - 1}{4\pi}
-\int_S \sigma(\mathbf{r}')
-\frac{(\mathbf{r} - \mathbf{r}') \cdot \mathbf{n}(\mathbf{r}')}
-        {|\mathbf{r} - \mathbf{r}'|^3}
-\, dS'
-= -E_n^{\rm inc}(\mathbf{r})
+\frac{\varepsilon_r + 1}{2} \sigma(\mathbf{r}) + \frac{\varepsilon_r - 1}{4\pi} \int_S \sigma(\mathbf{r}') \frac{(\mathbf{r} - \mathbf{r}') \cdot \mathbf{n}(\mathbf{r}')} {|\mathbf{r} - \mathbf{r}'|^3} \, dS' = -E_n^{\rm inc}(\mathbf{r})
 $$
 
 where $\sigma$ is the equivalent charge density, and
@@ -71,10 +65,7 @@ $$
 Z_{ij} =
 \begin{cases}
 \displaystyle \frac{\varepsilon_r + 1}{2}, & i = j \\[8pt]
-\displaystyle \frac{\varepsilon_r - 1}{4\pi}
-\frac{(\mathbf{r}_i - \mathbf{r}_j) \cdot \mathbf{n}_j}
-        {|\mathbf{r}_i - \mathbf{r}_j|^3}
-\Delta s_j, & i \neq j
+\displaystyle \frac{\varepsilon_r - 1}{4\pi} \frac{(\mathbf{r}_i - \mathbf{r}_j) \cdot \mathbf{n}_j} {|\mathbf{r}_i - \mathbf{r}_j|^3} \Delta s_j, & i \neq j
 \end{cases}
 $$
 

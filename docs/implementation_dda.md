@@ -23,9 +23,7 @@ with a cubic lattice of $N = n_x n_y n_z$ dipoles at positions
 $\{\mathbf{r}_i\}$.  The lattice spacing $d$ is chosen adaptively:
 
 $$
-n_\alpha = \max\left(1, \;{\rm round}(l_\alpha / d)\right),
-\qquad
-\Delta_\alpha = l_\alpha / n_\alpha  \quad (\alpha = x, y, z)
+n_\alpha = \max\left(1, \;{\rm round}(l_\alpha / d)\right), \qquad \Delta_\alpha = l_\alpha / n_\alpha \quad (\alpha = x, y, z)
 $$
 
 The dipoles are centred in each voxel.  The spacing is uniform but may differ
@@ -38,8 +36,7 @@ Each dipole responds to the local field via the Clausius–Mossotti relation
 of a cubic cell [3]:
 
 $$
-\alpha_{\rm CM} = 3 \varepsilon_0 V_{\rm cell}
-\frac{\varepsilon_r - 1}{\varepsilon_r + 2}
+\alpha_{\rm CM} = 3 \varepsilon_0 V_{\rm cell} \frac{\varepsilon_r - 1}{\varepsilon_r + 2}
 $$
 
 where $V_{\rm cell} = \Delta_x \Delta_y \Delta_z$ is the volume of one
@@ -50,9 +47,7 @@ voxel.  In our units, $\varepsilon_0 = 1$.
 For dipole $i$ at position $\mathbf{r}_i$, the local field is
 
 $$
-\mathbf{E}_{\rm loc}(\mathbf{r}_i) =
-\mathbf{E}_0 + \sum_{j \neq i} \mathbf{G}(\mathbf{r}_i - \mathbf{r}_j)
-\; \mathbf{p}_j
+\mathbf{E}_{\rm loc}(\mathbf{r}_i) = \mathbf{E}_0 + \sum_{j \neq i} \mathbf{G}(\mathbf{r}_i - \mathbf{r}_j) \; \mathbf{p}_j
 $$
 
 where $\mathbf{p}_j = \alpha_{\rm CM} \mathbf{E}_{\rm loc}(\mathbf{r}_j)$
@@ -60,9 +55,7 @@ is the dipole moment at site $j$, $\mathbf{E}_0$ is the uniform applied
 field, and $\mathbf{G}(\mathbf{R})$ is the static Green's dyadic
 
 $$
-\mathbf{G}(\mathbf{R}) =
-\frac{1}{4\pi\varepsilon_0}
-\frac{3\hat{\mathbf{R}}\hat{\mathbf{R}}^T - \mathbf{I}}{R^3}
+\mathbf{G}(\mathbf{R}) = \frac{1}{4\pi\varepsilon_0} \frac{3\hat{\mathbf{R}}\hat{\mathbf{R}}^T - \mathbf{I}}{R^3}
 $$
 
 Substituting $\mathbf{p}_i = \alpha_{\rm CM} \mathbf{E}_{\rm loc}(\mathbf{r}_i)$
@@ -87,8 +80,7 @@ $\varepsilon_r > 1$.  The total polarizability tensor is obtained by summing
 the dipole moments for three orthogonal applied field directions:
 
 $$
-\alpha_{\mu\nu} = \sum_i p_{i,\mu}^{(\nu)},
-\qquad \mu,\nu \in \{x,y,z\}
+\alpha_{\mu\nu} = \sum_i p_{i,\mu}^{(\nu)}, \qquad \mu,\nu \in \{x,y,z\}
 $$
 
 where $p_i^{(\nu)}$ is the dipole moment at site $i$ when the applied
@@ -143,7 +135,7 @@ via nonlinear least squares (L-BFGS-B).  The fitted intercept $P_\infty$ is
 the continuum-limit polarizability.  The exponent $\beta$ is empirically
 found to be in the range 0.3–2.0 depending on geometry and contrast.
 
-## PEC Limit ($ \varepsilon_r \to \infty$)
+## PEC Limit ($\varepsilon_r \to \infty$)
 
 For PEC objects, the DDA can extrapolate from finite $\varepsilon_r$:
 converged polarizabilities are computed at several $\varepsilon_r$ values
