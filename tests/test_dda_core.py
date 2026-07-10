@@ -8,12 +8,11 @@ import pytest
 import numpy as np
 import sys, os
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 # These tests import dda_core — if it's not available or imports fail,
 # the test is skipped rather than hard-failing.
 try:
-    from dda_core import (
+    from espol_cuboids.dda_core import (
         make_lattice, lattice_info, alpha_cm,
         compute_polarizability_fft,
     )

@@ -2,10 +2,9 @@
 import pytest
 import numpy as np
 import sys, os
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), 'tools'))
-from gen_mesh_2d_rect import gen_mesh_2d_rect
-from sm_comp_polarizability_2d import comp_polarizability_2d
-from vector_analysis import Mesh
+from espol_cuboids.gen_mesh_2d_rect import gen_mesh_2d_rect
+from espol_cuboids.mom2d import comp_polarizability_2d
+from espol_cuboids.vector_analysis import Mesh
 
 
 class TestMesh2D:

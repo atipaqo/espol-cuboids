@@ -54,66 +54,81 @@ cuboids using three independent numerical methods:
           equation) on a cubic lattice inside the cuboid.
 \end{itemize}
 %
-All three methods output the normalised polarizability tensor and effective depolarization factors
-\(N_x, N_y, N_z\) for each shape and permittivity.  The MoM and DDA solvers
-also perform convergence extrapolation to the continuum limit.
+All three methods output the normalised polarizability tensor and effective
+depolarization factors \(N_x, N_y, N_z\) for each shape and permittivity.
+The MoM and DDA solvers also perform convergence extrapolation to the
+continuum limit.
 
-For mathematical details of each method, refer to the accompanying
-implementation documents in this folder:
-%
-\begin{itemize}
-    \item \texttt{implementation\_mom3d.md}
-    \item \texttt{implementation\_mom2d.md}
-    \item \texttt{implementation\_dda.md}
-\end{itemize}
+\section{Installation}
+
+\begin{lstlisting}[language=,caption={Clone and install}]
+git clone https://github.com/atipaqo/espol-cuboids.git
+cd espol-cuboids
+pip install -e .
+\end{lstlisting}
+
+Requirements: Python $\ge$ 3.9, NumPy $\ge$ 1.20, SciPy $\ge$ 1.7.
+
+All scripts and library code are accessible after installation.  The
+\texttt{espol\_cuboids} package can be imported anywhere:
+
+\begin{lstlisting}[language=Python,caption={Library usage example}]
+from espol_cuboids import (
+    gen_mesh_3d_rect, comp_polarizability_3d, Mesh
+)
+r, n, ds, ne, V = gen_mesh_3d_rect(1.0, 1.0, 1.0, nd=30, octant=True)
+P = comp_polarizability_3d(Mesh(r, n, ds, V=V, er=10.0, octant=True))
+print(P.xx)  # ≈ 2.49
+\end{lstlisting}
 
 \section{Project Structure}
 
 \begin{lstlisting}[language=,caption={Key files and directories}]
 espol-cuboids/
-  run_mom3d_sweep.py         # 3D MoM sweep entry point
-  run_mom2d_sweep.py         # 2D MoM sweep entry point
-  run_dda_sweep.py           # DDA sweep entry point
+  pyproject.toml
 
-  tools/
-    gen_mom_3d.py            # 3D MoM: convergence, caching, power-law fit
-    gen_mesh_3d_rect.py      # 3D surface mesh generator
-    sm_comp_polarizability_3d.py  # 3D MoM core solver
-    mom3d_kernel.py          # Matrix-free GMRES operator
-    mom3d_aca.py             # ACA-compressed H-matrix solver
-    gen_mesh_2d_rect.py      # 2D perimeter mesh generator
-    sm_comp_polarizability_2d.py  # 2D MoM core solver
-    vector_analysis.py       # V3, D3, Mesh data structures
-    dda_core.py              # DDA: lattice, FFT-GMRES, convergence
-    _path_setup.py           # Python path bootstrap
+  src/espol_cuboids/              # Importable package
+    __init__.py                   # Public API
+    vector_analysis.py            # V3, D3, Ori, Mesh data structures
+    dda_core.py                   # DDA solver (FFT-GMRES, convergence)
+    mom2d.py                      # MoM 2D solver
+    mom3d.py                      # MoM 3D solver (LU, GMRES, ACA)
+    gen_dda.py                    # DDA batch runner (cache, convergence fit)
+    gen_mom_2d.py                 # MoM 2D batch runner
+    gen_mom_3d.py                 # MoM 3D batch runner
+    gen_mesh_2d_rect.py           # 2D perimeter mesh generator
+    gen_mesh_3d_rect.py           # 3D surface mesh generator
 
-  docs/
-    user_guide.tex           # This document
-    implementation_mom3d.md
-    implementation_mom2d.md
-    implementation_dda.md
+  examples/
+    basic_usage.py                # Single-point demonstration
+    run_mom3d_sweep.py            # 3D MoM sweep entry point
+    run_mom2d_sweep.py            # 2D MoM sweep entry point
+    run_dda_sweep.py              # DDA sweep entry point
 
   tests/
-    test_vector.py           # V3, D3, Mesh unit tests
-    test_dda_core.py         # DDA correctness & regression
-    test_mom2d.py            # 2D MoM mesh, solver, regression
-    test_mom3d.py            # 3D MoM mesh, solver, ACA, convergence
+    test_vector.py                # V3, D3, Mesh unit tests
+    test_dda_core.py              # DDA correctness & regression
+    test_mom2d.py                 # 2D MoM mesh, solver, regression
+    test_mom3d.py                 # 3D MoM mesh, solver, ACA, convergence
 
-  data/csvdata/                  # Output CSV files
-  data/_mom3d_cache/         # MoM 3D solve cache
-  data/_dda_cache/           # DDA solve cache
+  data/                           # Caches & CSV output (auto-created)
+    csvdata/
+    _mom3d_cache/
+    _mom2d_cache/
+    _dda_cache/
+
+  docs/                           # Documentation
+    user_guide.pdf
 \end{lstlisting}
 
 \section{Prerequisites}
 
 \begin{itemize}
-    \item Python 3.10+ with NumPy, SciPy.
-    \item All scripts assume they are run from the \texttt{espol-cuboids/} directory.
-    \item The \texttt{tools/} folder is automatically added to the Python
-          path by each entry script.
-    \item Cached results are stored in \texttt{data/\_mom3d\_cache/} and
-          \texttt{data/\_dda\_cache/}.  Delete these directories to force
-          recomputation.
+    \item Python 3.9+ with NumPy and SciPy (installed automatically by
+          \texttt{pip install -e .}).
+    \item Cached results are stored in \texttt{data/\_mom3d\_cache/},
+          \texttt{data/\_mom2d\_cache/}, and \texttt{data/\_dda\_cache/}.
+          Delete these directories to force recomputation.
 \end{itemize}
 
 \section{Running the MoM 3D Sweep}
@@ -121,7 +136,7 @@ espol-cuboids/
 \subsection{Command-Line Options}
 
 \begin{lstlisting}[language=bash]
-python run_mom3d_sweep.py [--er ER_LIST] [--solver direct|aca] [--dry-run]
+python examples/run_mom3d_sweep.py [--er ER_LIST] [--solver direct|aca] [--dry-run]
 \end{lstlisting}
 
 \begin{center}
@@ -169,16 +184,16 @@ limit.  Individual solves and converged fits are cached on disk.
 
 \begin{lstlisting}[language=bash]
 # Preview what will be computed
-python run_mom3d_sweep.py --dry-run
+python examples/run_mom3d_sweep.py --dry-run
 
 # Sweep with default permittivities (direct LU)
-python run_mom3d_sweep.py
+python examples/run_mom3d_sweep.py
 
 # Single permittivity with ACA solver
-python run_mom3d_sweep.py --er 10 --solver aca
+python examples/run_mom3d_sweep.py --er 10 --solver aca
 
 # Custom permittivity range
-python run_mom3d_sweep.py --er 1.5,3,6,12,100
+python examples/run_mom3d_sweep.py --er 1.5,3,6,12,100
 \end{lstlisting}
 
 \subsection{Output}
@@ -188,14 +203,14 @@ factors $N_x, N_y, N_z$ and their sum $N_{\Sigma} = N_x + N_y + N_z$ are
 shown for each shape--$\varepsilon_r$ pair.
 
 For bulk data export, use the standalone \texttt{gen\_mom\_3d.main()}
-function (run \texttt{python tools/gen\_mom\_3d.py --dry-run}).
+function (run \texttt{python -c "from espol\_cuboids.gen\_mom\_3d import main; main()" --dry-run}).
 
 \section{Running the MoM 2D Sweep}
 
 \subsection{Command-Line Options}
 
 \begin{lstlisting}[language=bash]
-python run_mom2d_sweep.py [--er ER_LIST] [--dry-run]
+python examples/run_mom2d_sweep.py [--er ER_LIST] [--dry-run]
 \end{lstlisting}
 
 \begin{center}
@@ -204,7 +219,7 @@ python run_mom2d_sweep.py [--er ER_LIST] [--dry-run]
 Flag & Values & Description \\
 \midrule
 \texttt{--er} & Comma-separated floats
-    & Relative permittivities.  Default: \texttt{10,20,100,1e10}. \\
+    & Relative permittivities.  Default: \texttt{0.7,1.5,3,6,1e3,1e5}. \\
 \texttt{--dry-run} & (no value)
     & Print the shapes and $n_d$ sequences that would be computed, then exit. \\
 \bottomrule
@@ -216,10 +231,12 @@ problem sizes remain small ($n \lesssim 500$).
 
 \subsection{Shape Grid}
 
-11 aspect ratios $r = l_y / l_x$ with $l_x = 1$:
+23 aspect ratios $r = l_y / l_x$ with $l_x = 1$:
 %
 \begin{quote}
-\ttfamily 1.0, 0.7, 0.5, 0.3, 0.2, 0.15, 0.1, 0.07, 0.05, 0.03, 0.02
+\ttfamily
+0.1, 0.15, 0.2, 0.3, 0.35, 0.4, 0.5, 0.6, 0.667, 0.8, 0.9,
+1.0, 1.1, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 3.33, 5.0, 7.0, 10.0
 \end{quote}
 
 \subsection{Convergence}
@@ -232,13 +249,13 @@ $n_d \to \infty$.  Individual solves and fits are cached in
 
 \begin{lstlisting}[language=bash]
 # Preview
-python run_mom2d_sweep.py --dry-run
+python examples/run_mom2d_sweep.py --dry-run
 
 # Full sweep
-python run_mom2d_sweep.py
+python examples/run_mom2d_sweep.py
 
 # Custom permittivities
-python run_mom2d_sweep.py --er 2,5,10
+python examples/run_mom2d_sweep.py --er 2,5,10
 \end{lstlisting}
 
 \subsection{Output}
@@ -249,15 +266,14 @@ N_x = \frac{1}{P_{xx}/A}, \qquad
 N_y = \frac{1}{P_{yy}/A}, \qquad
 N_{\Sigma} = N_x + N_y
 \]
-are printed to stdout.  Results are saved to
-\texttt{data/csvdata/mom2d.csv}.
+are printed to stdout.  Results are cached on disk for reuse.
 
 \section{Running the DDA Sweep}
 
 \subsection{Command-Line Options}
 
 \begin{lstlisting}[language=bash]
-python run_dda_sweep.py --mode fixed|converge [--er ER_LIST] [--dry-run]
+python examples/run_dda_sweep.py --mode fixed|converge [--er ER_LIST] [--dry-run]
 \end{lstlisting}
 
 \begin{center}
@@ -300,16 +316,16 @@ used for all solves ($N \gtrsim 1000$).
 
 \begin{lstlisting}[language=bash]
 # Preview fixed mode
-python run_dda_sweep.py --mode fixed --dry-run
+python examples/run_dda_sweep.py --mode fixed --dry-run
 
 # Quick fixed-d sweep (all er, all shapes)
-python run_dda_sweep.py --mode fixed
+python examples/run_dda_sweep.py --mode fixed
 
 # Converge mode for er=10 only
-python run_dda_sweep.py --mode converge --er 10
+python examples/run_dda_sweep.py --mode converge --er 10
 
 # Converge mode with multiple er values
-python run_dda_sweep.py --mode converge --er 2,5,10
+python examples/run_dda_sweep.py --mode converge --er 2,5,10
 \end{lstlisting}
 
 \subsection{Output}
@@ -359,7 +375,8 @@ All three sweeps cache individual solves on disk:
 
 \begin{itemize}
     \item \textbf{MoM 3D:} \texttt{data/\_mom3d\_cache/} — keyed by
-          $\varepsilon_r$, shape, $n_d$, $\beta$, and solver type (direct/ACA).
+          $\varepsilon_r$, shape, $n_d$, $\beta$, and solver type
+          (direct/ACA).
     \item \textbf{MoM 2D:} \texttt{data/\_mom2d\_cache/} — keyed by
           $\varepsilon_r$, shape, $n_d$, $\beta$.
     \item \textbf{DDA:} \texttt{data/\_dda\_cache/} — keyed by
@@ -375,28 +392,12 @@ recomputation, delete the relevant cache directory.
 The test suite is run with pytest from the \texttt{espol-cuboids/} directory:
 
 \begin{lstlisting}[language=bash]
-python -m pytest tests/ -q
+python -m pytest tests/ -v                  # all 54 tests
+python -m pytest tests/ -v -m "not slow"    # skip full MoM/DDA solves
 \end{lstlisting}
 
-This runs all 54 tests covering vector operations, mesh generation, MoM 2D/3D
-solvers, DDA solver, ACA solver, convergence extrapolation, and regression
+Tests cover vector operations, mesh generation, MoM 2D/3D solvers, the
+DDA solver, the ACA backend, convergence extrapolation, and regression
 against known values.
-
-To skip slow tests (full MoM/DDA solves), use:
-\begin{lstlisting}[language=bash]
-python -m pytest tests/ -q -m "not slow"
-\end{lstlisting}
-
-\section{Further Reading}
-
-\begin{itemize}
-    \item \texttt{implementation\_mom3d.md} — Detailed description of the 3D
-          MoM formulation, octant symmetry, ACA compression, and power-law fit.
-    \item \texttt{implementation\_mom2d.md} — 2D PMCHW integral equation and
-          collocation discretization.
-    \item \texttt{implementation\_dda.md} — Clausius--Mossotti polarizability,
-          coupled-dipole equations, FFT-accelerated GMRES, and $d \to 0$ /
-          $\varepsilon_r \to \infty$ extrapolation.
-\end{itemize}
 
 \end{document}

@@ -2,8 +2,7 @@
 import pytest
 import numpy as np
 import sys, os
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), 'tools'))
-from vector_analysis import V3, D3, Mesh
+from espol_cuboids.vector_analysis import V3, D3, Mesh
 
 
 class TestV3:
