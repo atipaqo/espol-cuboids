@@ -78,7 +78,7 @@ from espol_cuboids import (
 )
 r, n, ds, ne, V = gen_mesh_3d_rect(1.0, 1.0, 1.0, nd=30, octant=True)
 P = comp_polarizability_3d(Mesh(r, n, ds, V=V, er=10.0, octant=True))
-print(P.xx)  # ≈ 2.49
+print(P.xx)  # ~2.49
 \end{lstlisting}
 
 \section{Project Structure}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.7.6)  6 JUL 2026 13:00
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.7.6)  10 JUL 2026 10:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -407,12 +407,12 @@ Package hyperref Info: Link coloring ON on input line 37.
 \makeMPintoPDFobject=\count330
 \everyMPtoPDFconversion=\toks26
 ) (user_guide.toc
-LaTeX Font Info:    Trying to load font information for U+msa on input line 5.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 6.
 
 (/home/daniel/.miktex/texmfs/install/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 5.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 6.
 
 (/home/daniel/.miktex/texmfs/install/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -424,67 +424,78 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {/home/daniel/.miktex/texmfs/data/fonts/map/pdftex/pdftex.map}]
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 72.
+nput line 64.
+
+(/home/daniel/.miktex/texmfs/install/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2025/11/14 1.11b listings language file
+)
+LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10> not available
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 76.
  [2]
+Overfull \hbox (27.328pt too wide) in paragraph at lines 129--132
+[]\OT1/cmr/m/n/10.95 Cached re-sults are stored in \OT1/cmtt/m/n/10.95 data/[]m
+om3d[]cache/\OT1/cmr/m/n/10.95 , \OT1/cmtt/m/n/10.95 data/[]mom2d[]cache/\OT1/c
+mr/m/n/10.95 , and \OT1/cmtt/m/n/10.95 data/[]dda[]cache/\OT1/cmr/m/n/10.95 .
+ []
+
 (/home/daniel/.miktex/texmfs/install/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2025/11/14 1.11b listings language file
 )
 (/home/daniel/.miktex/texmfs/install/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2025/11/14 1.11b listings language file
 )
-Underfull \hbox (badness 2302) in paragraph at lines 133--135
+Underfull \hbox (badness 2302) in paragraph at lines 148--150
 []\OT1/cmr/m/n/10.95 Relative per-mit-tiv-i-ties to sweep.
  []
 
 
-Underfull \hbox (badness 4967) in paragraph at lines 136--139
+Underfull \hbox (badness 4967) in paragraph at lines 151--154
 []\OT1/cmr/m/n/10.95 Solver back-end. \OT1/cmtt/m/n/10.95 direct \OT1/cmr/m/n/1
 0.95 uses
  []
 
 
-Underfull \hbox (badness 1303) in paragraph at lines 136--139
+Underfull \hbox (badness 1303) in paragraph at lines 151--154
 \OT1/cmr/m/n/10.95 compressed H-matrix + GM-RES
  []
 
 
-Underfull \hbox (badness 2932) in paragraph at lines 136--139
+Underfull \hbox (badness 2932) in paragraph at lines 151--154
 \OT1/cmr/m/n/10.95 (rec-om-mended for large meshes,
  []
 
 
-Overfull \hbox (7.66284pt too wide) in paragraph at lines 153--157
+Overfull \hbox (7.66284pt too wide) in paragraph at lines 168--172
 []\OT1/cmtt/m/n/10.95 (1.0, 1.0), (1.0, 0.7), (1.0, 0.5), (1.0, 0.3), (1.0, 0.2
 ), (0.7, 0.7),
  []
 
 
-Overfull \hbox (7.66284pt too wide) in paragraph at lines 153--157
+Overfull \hbox (7.66284pt too wide) in paragraph at lines 168--172
 \OT1/cmtt/m/n/10.95 (0.7, 0.5), (0.7, 0.3), (0.7, 0.2), (0.5, 0.5), (0.5, 0.3),
  (0.5, 0.2),
  []
 
 [3]
-Overfull \hbox (61.05298pt too wide) in paragraph at lines 190--192
-[]\OT1/cmr/m/n/10.95 For bulk data ex-port, use the stan-dalone \OT1/cmtt/m/n/1
-0.95 gen[]mom[]3d.main() \OT1/cmr/m/n/10.95 func-tion (run \OT1/cmtt/m/n/10.95 
-python tools/gen[]mom[]3d.py
- []
-
-
-Underfull \hbox (badness 1264) in paragraph at lines 207--208
+Underfull \hbox (badness 1264) in paragraph at lines 222--223
 []\OT1/cmr/m/n/10.95 Relative per-mit-tiv-i-ties. De-fault:
  []
 
+
+Overfull \hbox (24.9089pt too wide) in paragraph at lines 238--240
+[]\OT1/cmtt/m/n/10.95 0.1, 0.15, 0.2, 0.3, 0.35, 0.4, 0.5, 0.6, 0.667, 0.8, 0.9
+, 1.0, 1.1, 1.25,
+ []
+
 [4]
-Overfull \hbox (36.25822pt too wide) in paragraph at lines 272--274
+Overfull \hbox (36.25822pt too wide) in paragraph at lines 288--290
 \OT1/cmtt/m/n/10.95 0.5,1.25,1.5,1.75,2,3,5,8,10,12.5\OT1/cmr/m/n/10.95 .| 
  []
 
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 287.
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 303.
 
-Overfull \hbox (108.69386pt too wide) in paragraph at lines 291--297
+Overfull \hbox (108.69386pt too wide) in paragraph at lines 307--313
 \OT1/cmr/m/n/10.95 A power-law $\OML/cmm/m/it/10.95 P\OT1/cmr/m/n/10.95 (\OML/c
 mm/m/it/10.95 d\OT1/cmr/m/n/10.95 ) = \OML/cmm/m/it/10.95 P[] \OT1/cmr/m/n/10.9
 5 + \OML/cmm/m/it/10.95 C d[]$ \OT1/cmr/m/n/10.95 fit yields the con-tin-uum li
@@ -497,16 +508,16 @@ LaTeX2e <2026-06-01>
 L3 programming layer <2026-06-18>
  ***********
 Package rerunfilecheck Info: File `user_guide.out' has not changed.
-(rerunfilecheck)             Checksum: E9E2D7EB01572702D17FFAC11A855ABA;3342.
+(rerunfilecheck)             Checksum: 1985464DC77DCF116B856E52B81ED851;3324.
  ) 
 Here is how much of TeX's memory you used:
- 12239 strings out of 467511
- 182394 string characters out of 5413206
- 1124289 words of memory out of 5000000
- 41243 multiletter control sequences out of 15000+600000
+ 12446 strings out of 467511
+ 184961 string characters out of 5413206
+ 1108854 words of memory out of 5000000
+ 41435 multiletter control sequences out of 15000+600000
  635031 words of font info for 68 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 74i,10n,79p,259b,2055s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 74i,10n,79p,259b,2063s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/daniel/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm109
 5.pk></home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmbx10
 .pfb></home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmbx12
@@ -522,9 +533,9 @@ b></home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmr8.pfb>
 /home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmtt10.pfb><
 /home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/symbols/msam10.
 pfb>
-Output written on user_guide.pdf (7 pages, 223725 bytes).
+Output written on user_guide.pdf (7 pages, 228362 bytes).
 PDF statistics:
- 344 PDF objects out of 1000 (max. 8388607)
- 112 named destinations out of 1000 (max. 500000)
+ 359 PDF objects out of 1000 (max. 8388607)
+ 125 named destinations out of 1000 (max. 500000)
  217 words of extra memory for PDF output out of 10000 (max. 10000000)
 
