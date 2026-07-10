@@ -12,7 +12,7 @@ from .gen_mesh_3d_rect import gen_mesh_3d_rect
 from .mom3d import comp_polarizability_3d
 from .vector_analysis import Mesh, D3
 
-_CACHE_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', '_mom3d_cache')
+_CACHE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'data', '_mom3d_cache')
 os.makedirs(_CACHE_DIR, exist_ok=True)
 _CACHE_VERSION = 'v8'
 _FIT_CACHE_VERSION = 'v9'

@@ -12,7 +12,7 @@ import sys, os, numpy as np, time, json, hashlib
 from .dda_core import (make_lattice, compute_polarizability_fft,
                        _fit_powerlaw_single)
 
-_CACHE_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', '_dda_cache')
+_CACHE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'data', '_dda_cache')
 os.makedirs(_CACHE_DIR, exist_ok=True)
 _CACHE_VERSION = 'v3'
 _FIT_CACHE_VERSION = 'v3'

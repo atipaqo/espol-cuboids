@@ -1,0 +1,21 @@
+# Build artifacts
+*.egg-info/
+__pycache__/
+*.pyc
+*.pyo
+dist/
+build/
+
+# Runtime cache & data
+data/_mom3d_cache/
+data/_mom2d_cache/
+data/_dda_cache/
+data/csvdata/
+
+# TeX auxiliary
+docs/**/*.aux
+docs/**/*.log
+docs/**/*.toc
+docs/**/*.out
+docs/**/*.fdb_latexmk
+docs/**/*.fls

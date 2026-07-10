@@ -12,7 +12,7 @@ from .gen_mesh_2d_rect import gen_mesh_2d_rect
 from .mom2d import comp_polarizability_2d
 from .vector_analysis import Mesh
 
-_CACHE_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', '_mom2d_cache')
+_CACHE_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'data', '_mom2d_cache')
 os.makedirs(_CACHE_DIR, exist_ok=True)
 _CACHE_VERSION = 'v2'
 _FIT_CACHE_VERSION = 'v2'
